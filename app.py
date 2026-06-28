@@ -72,18 +72,23 @@ from streamlit.components.v1 import html
 VAPI_PUBLIC_KEY = "c0a19fb2-3eb8-45e5-b4ee-f3688564bb6e"
 VAPI_AGENT_ID = "7cb60ce4-684d-4f58-af4e-f156d89f2e60"
 
+# We add a style tag to force it to show up on top of Streamlit layers
 vapi_widget_code = f"""
-<script src="https://unpkg.com/@vapi-ai/client-sdk-react/dist/embed/widget.umd.js" async type="text/javascript"></script>
-<vapi-widget
-  public-key="{VAPI_PUBLIC_KEY}"
-  assistant-id="{VAPI_AGENT_ID}"
-  mode="voice"
-></vapi-widget>
+<div style="position: fixed; bottom: 20px; right: 20px; z-index: 999999;">
+  <script src="https://unpkg.com/@vapi-ai/client-sdk-react/dist/embed/widget.umd.js" async type="text/javascript"></script>
+  <vapi-widget
+    public-key="{VAPI_PUBLIC_KEY}"
+    assistant-id="{VAPI_AGENT_ID}"
+    mode="voice"
+  ></vapi-widget>
+</div>
 """
 
-# Place the floating voice button inside your sidebar layout
+# Place the voice configuration inside your sidebar layout
 with st.sidebar:
     st.markdown("---")
     st.markdown("### 🎙️ Call Your AI Proxy")
     st.write("Click the floating mic icon on the bottom right of your screen to speak live with your strategic voice agent.")
-    html(vapi_widget_code, height=0)
+    
+    # We change height to 80 so the widget container has room to display its floating button layers!
+    html(vapi_widget_code, height=80)
