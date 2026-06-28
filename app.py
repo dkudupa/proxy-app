@@ -72,6 +72,7 @@ import streamlit as st
 VAPI_PUBLIC_KEY = "c0a19fb2-3eb8-45e5-b4ee-f3688564bb6e"
 VAPI_AGENT_ID = "7cb60ce4-684d-4f58-af4e-f156d89f2e60"
 
+# We pass explicit microphone features directly into the frame injection code
 vapi_widget_code = f"""
 <div style="position: fixed; bottom: 10px; left: 10px; z-index: 999999;">
   <script src="https://unpkg.com/@vapi-ai/client-sdk-react/dist/embed/widget.umd.js" async type="text/javascript"></script>
@@ -79,6 +80,7 @@ vapi_widget_code = f"""
     public-key="{VAPI_PUBLIC_KEY}"
     assistant-id="{VAPI_AGENT_ID}"
     mode="voice"
+    allow="microphone"
   ></vapi-widget>
 </div>
 """
@@ -87,6 +89,4 @@ with st.sidebar:
     st.markdown("---")
     st.markdown("### 🎙️ Call Your AI Proxy")
     st.write("Click the button below to connect to your live voice agent.")
-    
-    # Passing the layout directly through Streamlit components module
     st.components.v1.html(vapi_widget_code, height=100, scrolling=False)
