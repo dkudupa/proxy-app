@@ -69,23 +69,27 @@ else:
             st.markdown(ai_strategy)
             st.balloons()
 
-# --- STEP D: LIVE AI VOICE PROXY CALLING (MOBILE-FRIENDLY AUDIO HOTLINE) ---
-# Fixed public standalone endpoint for Vapi voice calling interfaces
-
-VAPI_AGENT_ID = "d76a06e2-64dd-4d8b-812b-74bb320f6f41"
+# --- STEP D: LIVE AI VOICE PROXY CALLING (VAPI COMPONENT) ---
+# Active Account Credentials
 VAPI_PUBLIC_KEY = "c0a19fb2-3eb8-45e5-b4ee-f3688564bb6e"
+VAPI_AGENT_ID = "7cb60ce4-684d-4f58-af4e-f156d89f2e60"
 
-direct_call_url = f"https://vapi.ai/vapi-embed?publicKey={VAPI_PUBLIC_KEY}&assistantId={VAPI_AGENT_ID}&mode=voice"
+# Using a standard clean canvas injection block
+vapi_widget_code = f"""
+<div style="display: flex; justify-content: center; align-items: center; padding-top: 10px;">
+  <script src="https://unpkg.com/@vapi-ai/client-sdk-react/dist/embed/widget.umd.js" async type="text/javascript"></script>
+  <vapi-widget
+    public-key="{VAPI_PUBLIC_KEY}"
+    assistant-id="{VAPI_AGENT_ID}"
+    mode="voice"
+  ></vapi-widget>
+</div>
+"""
 
 with st.sidebar:
     st.markdown("---")
     st.markdown("### 🎙️ Call Your AI Proxy")
-    st.write("Mobile browsers often block microphones inside embedded layouts. Click the hotline button below to open an unblocked, dedicated voice portal.")
+    st.write("Click the green button inside the container box below to start your live voice conversation stream:")
     
-    # Clean mobile action component button
-    st.link_button(
-        "📞 Start Live Voice Call", 
-        direct_call_url, 
-        use_container_width=True,
-        type="primary"
-    )
+    # We display the standard widget button explicitly inside a safe height layout
+    st.components.v1.html(vapi_widget_code, height=120, scrolling=False)
