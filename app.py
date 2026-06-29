@@ -69,27 +69,40 @@ else:
             st.markdown(ai_strategy)
             st.balloons()
 
-# --- STEP D: LIVE AI VOICE PROXY CALLING (VAPI COMPONENT) ---
-# Active Account Credentials
-VAPI_PUBLIC_KEY = "c0a19fb2-3eb8-45e5-b4ee-f3688564bb6e"
-VAPI_AGENT_ID = "7cb60ce4-684d-4f58-af4e-f156d89f2e60"
-
-# Using a standard clean canvas injection block
-vapi_widget_code = f"""
-<div style="display: flex; justify-content: center; align-items: center; padding-top: 10px;">
-  <script src="https://unpkg.com/@vapi-ai/client-sdk-react/dist/embed/widget.umd.js" async type="text/javascript"></script>
-  <vapi-widget
-    public-key="{VAPI_PUBLIC_KEY}"
-    assistant-id="{VAPI_AGENT_ID}"
-    mode="voice"
-  ></vapi-widget>
-</div>
-"""
+# --- STEP D: LIVE AI VOICE PROXY AUTOMATION (DIRECT PHONE CALL) ---
+import requests
 
 with st.sidebar:
     st.markdown("---")
-    st.markdown("### 🎙️ Call Your AI Proxy")
-    st.write("Click the green button inside the container box below to start your live voice conversation stream:")
+    st.markdown("### 📞 Trigger Direct Phone Call")
+    st.write("Bypass browser microphone blocks entirely. Have your AI Proxy call your phone directly.")
     
-    # We display the standard widget button explicitly inside a safe height layout
-    st.components.v1.html(vapi_widget_code, height=120, scrolling=False)
+    # Input field for your phone number
+    target_phone = st.text_input("Enter your phone number (with country code, e.g., +1234567890):", placeholder="+1...")
+    
+    if st.button("☎️ Ring My Phone", type="primary", use_container_width=True):
+        if not target_phone:
+            st.error("Please enter a valid phone number first!")
+        else:
+            with st.spinner("Initiating phone uplink..."):
+                # Hit Vapi's outbound infrastructure endpoint
+                vapi_url = "https://api.vapi.ai/call"
+                headers = {
+                    "Authorization": "Bearer c0a19fb2-3eb8-45e5-b4ee-f3688564bb6e", # Public Token
+                    "Content-Type": "application/json"
+                }
+                payload = {
+                    "assistantId": "7cb60ce4-684d-4f58-af4e-f156d89f2e60",
+                    "customer": {
+                        "number": target_phone
+                    }
+                }
+                
+                try:
+                    response = requests.post(vapi_url, json=payload, headers=headers)
+                    if response.status_code in [200, 201]:
+                        st.success("📲 Calling you now! Check your phone.")
+                    else:
+                        st.error(f"Uplink failed: {response.text}")
+                except Exception as e:
+                    st.error(f"Connection Error: {str(e)}")
