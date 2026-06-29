@@ -70,8 +70,8 @@ else:
             st.balloons()
 
 # --- STEP D: LIVE AI VOICE PROXY CALLING (MOBILE-FRIENDLY AUDIO HOTLINE) ---
-# Direct web voice layout URL string creation
-direct_call_url = f"https://vapi.ai/embed?publicKey={VAPI_PUBLIC_KEY}&assistantId={VAPI_AGENT_ID}&mode=voice"
+# Fixed public standalone endpoint for Vapi voice calling interfaces
+direct_call_url = f"https://vapi.ai/vapi-embed?publicKey={VAPI_PUBLIC_KEY}&assistantId={VAPI_AGENT_ID}&mode=voice"
 
 with st.sidebar:
     st.markdown("---")
