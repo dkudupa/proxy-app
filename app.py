@@ -71,6 +71,10 @@ else:
 
 # --- STEP D: LIVE AI VOICE PROXY CALLING (MOBILE-FRIENDLY AUDIO HOTLINE) ---
 # Fixed public standalone endpoint for Vapi voice calling interfaces
+
+VAPI_AGENT_ID = "d76a06e2-64dd-4d8b-812b-74bb320f6f41"
+VAPI_PUBLIC_KEY = "c0a19fb2-3eb8-45e5-b4ee-f3688564bb6e"
+
 direct_call_url = f"https://vapi.ai/vapi-embed?publicKey={VAPI_PUBLIC_KEY}&assistantId={VAPI_AGENT_ID}&mode=voice"
 
 with st.sidebar:
