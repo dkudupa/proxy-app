@@ -49,23 +49,25 @@ else:
                 )
                 ai_strategy = completion.choices[0].message.content
 
-            # --- STEP C: Text-to-Speech Generation ---
+            # --- STEP C: Corrected Groq Text-to-Speech Generation ---
             with st.spinner("Synthesizing audio output..."):
-                # We generate native audio playback from the text strategy
+                # Using Groq's official production text-to-speech models
                 speech_response = client.audio.speech.create(
-                    model="tts-1",
-                    voice="alloy",  # Choice of alloy, echo, fable, onyx, nova, or shimmer
-                    input=f"Here is your strategic plan. {ai_strategy}"
+                    model="canopylabs/orpheus-v1-english",
+                    voice="autumn",  # Available options: autumn, diana, hannah, austin, daniel, troy
+                    input=f"Here is your strategic plan. {ai_strategy}",
+                    response_format="wav"
                 )
-                # Read the binary audio data stream
+                
+                # Use Groq's built-in helper to parse the file bytes cleanly
                 speech_bytes = speech_response.read()
 
             # --- STEP D: Render Strategy and Audio Natively ---
             st.markdown("---")
             st.header("🎯 Proxy's Verdict")
             
-            # Play the assistant's voice response out loud
-            st.audio(speech_bytes, format="audio/mp3", autoplay=True)
+            # Play the assistant's voice response out loud natively
+            st.audio(speech_bytes, format="audio/wav", autoplay=True)
             
             # Display written details
             st.markdown(ai_strategy)
