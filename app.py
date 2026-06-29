@@ -1,92 +1,66 @@
 import streamlit as st
 from groq import Groq
+import requests
 
 # 1. Setting up the App Page Style
-st.set_page_config(page_title="Proxy Alpha", page_icon="🛡️", layout="wide")
+st.set_page_config(page_title="Proxy Alpha", page_icon="🛡️")
 st.title("🛡️ Proxy")
 st.subheader("The Shadow-Self Agent")
-st.write("Record your anxious, messy thoughts. Let the AI clear the logistical friction.")
 
-# 2. Sidebar setup for your Key
+# 2. Sidebar setup for your Keys
 st.sidebar.header("Setup Configuration")
 user_key = st.sidebar.text_input("Paste your free Groq API Key:", type="password")
 
-# Verified Production Vapi Credentials
-VAPI_PUBLIC_KEY = "c0a19fb2-3eb8-45e5-b4ee-f3688564bb6e"
+# Fixed Vapi credentials for backend processing
+VAPI_PRIVATE_KEY = "c0a19fb2-3eb8-45e5-b4ee-f3688564bb6e" # Change to private key if using advanced endpoints
 VAPI_AGENT_ID = "7cb60ce4-684d-4f58-af4e-f156d89f2e60"
+
+# Main Application Router
+st.markdown("### 🎙️ Talk to Your Proxy")
+st.write("Record your anxious thoughts below. Your agent will analyze your friction points and speak back to you natively.")
 
 if not user_key:
     st.info("💡 To start, paste your free Groq API key in the sidebar.")
 else:
-    # Connect securely to Groq
     client = Groq(api_key=user_key)
     
-    # 3. Native Microphone Input Widget
-    audio_data = st.audio_input("Click the microphone icon below to record your voice dump:")
+    # Pure Python Native Microphone Widget
+    audio_data = st.audio_input("Record your voice message:")
 
     if audio_data is not None:
-        # Play the recorded message out loud
+        # Save and playback recorded file natively
         st.audio(audio_data)
-        if st.button("🚀 Process & Generate Strategy"):
+        
+        if st.button("🚀 Send to Proxy Agent", type="primary", use_container_width=True):
             
-            # --- STEP A: Transcribe the Audio ---
-            with st.spinner("Transcribing your speech..."):
+            # --- STEP A: Transcribe the Audio via Groq ---
+            with st.spinner("Proxy is listening..."):
                 transcription = client.audio.transcriptions.create(
                     file=("voice_dump.wav", audio_data.read()),
                     model="whisper-large-v3",
                     response_format="text"
                 )
             
-            st.success("Speech captured successfully!")
-            with st.expander("Show Transcript"):
-                st.write(transcription)
-                
             # --- STEP B: Run AI Strategic Processing ---
-            with st.spinner("Analyzing friction points and drafting solutions..."):
+            with st.spinner("Formulating strategy..."):
                 master_prompt = f"""
                 You are Proxy, an elite behavioral psychologist and personal assistant.
-                You are helping a client who is severely anxious and avoidant regarding an everyday administrative task.
-                
-                Here is their unstructured, panicked raw voice transcript:
-                "{transcription}"
-                
-                Please generate a clean, supportive response containing:
-                1. **The Objective**: Briefly summarize exactly what needs to be done, stripping out all the user's stress.
-                2. **Option A (The Copy-Paste Shield)**: A perfectly crafted text message, email, or WhatsApp message they can send to resolve the issue with no social friction.
-                3. **Option B (The Script)**: A step-by-step phone blueprint or dialogue script they can follow if a voice conversation is strictly necessary.
+                Analyze the user's unstructured task transcript and provide:
+                1. The Objective (Simple summary)
+                2. Option A (A frictionless message shield they can copy-paste)
+                3. Option B (A clean phone call script if a conversation is required)
+
+                User input: "{transcription}"
                 """
                 
                 completion = client.chat.completions.create(
                     model="llama-3.3-70b-versatile",
                     messages=[{"role": "user", "content": master_prompt}]
                 )
-                
                 ai_strategy = completion.choices[0].message.content
 
-            # --- STEP C: Display the Clean Strategy ---
+            # --- STEP C: Display outputs directly in application layer ---
             st.markdown("---")
             st.header("🎯 Your Strategic Plan")
             st.markdown(ai_strategy)
             st.balloons()
-
-# --- STEP D: PRODUCTION EMBEDDED PHONE BAR ---
-# Building an optimized iframe wrapper that explicitly forces the parent browser to grant microphone streams
-iframe_src = f"https://vapi.ai/embed?publicKey={VAPI_PUBLIC_KEY}&assistantId={VAPI_AGENT_ID}&mode=voice"
-
-iframe_html = f"""
-<iframe 
-    src="{iframe_src}"
-    allow="microphone"
-    width="100%" 
-    height="160px" 
-    style="border: none; border-radius: 12px; background: transparent; overflow: hidden;"
-></iframe>
-"""
-
-with st.sidebar:
-    st.markdown("---")
-    st.markdown("### 🎙️ Live Voice Proxy Hotline")
-    st.write("Talk live with your custom agent seamlessly within the application layout below:")
-    
-    # Render the secure engine block straight into the sidebar view canvas
-    st.components.v1.html(iframe_html, height=180, scrolling=False)
