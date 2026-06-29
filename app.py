@@ -85,12 +85,17 @@ with st.sidebar:
             st.error("Please enter a valid phone number first!")
         else:
             with st.spinner("Initiating phone uplink..."):
-                # Hit Vapi's outbound infrastructure endpoint
+                # Hit Vapi's standard call initiation endpoint
                 vapi_url = "https://api.vapi.ai/call"
+                
+                # CRITICAL: Replace this string with your copied Vapi Private API Key!
+                VAPI_PRIVATE_KEY = "9e86d08a-bb8b-498f-98df-7df2dab89304"
+                
                 headers = {
-                    "Authorization": "Bearer c0a19fb2-3eb8-45e5-b4ee-f3688564bb6e", # Public Token
+                    "Authorization": f"Bearer {VAPI_PRIVATE_KEY}",
                     "Content-Type": "application/json"
                 }
+                
                 payload = {
                     "assistantId": "7cb60ce4-684d-4f58-af4e-f156d89f2e60",
                     "customer": {
