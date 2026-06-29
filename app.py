@@ -11,6 +11,10 @@ st.write("Record your anxious, messy thoughts. Let the AI clear the logistical f
 st.sidebar.header("Setup Configuration")
 user_key = st.sidebar.text_input("Paste your free Groq API Key:", type="password")
 
+# Fixed Active Credentials for Vapi Voice Infrastructure
+VAPI_PUBLIC_KEY = "c0a19fb2-3eb8-45e5-b4ee-f3688564bb6e"
+VAPI_AGENT_ID = "7cb60ce4-684d-4f58-af4e-f156d89f2e60"
+
 if not user_key:
     st.info("💡 To start, paste your free Groq API key in the sidebar.")
 else:
@@ -65,28 +69,19 @@ else:
             st.markdown(ai_strategy)
             st.balloons()
 
-# --- STEP C: LIVE AI VOICE PROXY CALLING (VAPI WIDGET) ---
-import streamlit as st
-
-# Your verified active keys
-VAPI_PUBLIC_KEY = "c0a19fb2-3eb8-45e5-b4ee-f3688564bb6e"
-VAPI_AGENT_ID = "7cb60ce4-684d-4f58-af4e-f156d89f2e60"
-
-# We pass explicit microphone features directly into the frame injection code
-vapi_widget_code = f"""
-<div style="position: fixed; bottom: 10px; left: 10px; z-index: 999999;">
-  <script src="https://unpkg.com/@vapi-ai/client-sdk-react/dist/embed/widget.umd.js" async type="text/javascript"></script>
-  <vapi-widget
-    public-key="{VAPI_PUBLIC_KEY}"
-    assistant-id="{VAPI_AGENT_ID}"
-    mode="voice"
-    allow="microphone"
-  ></vapi-widget>
-</div>
-"""
+# --- STEP D: LIVE AI VOICE PROXY CALLING (MOBILE-FRIENDLY AUDIO HOTLINE) ---
+# Direct web voice layout URL string creation
+direct_call_url = f"https://vapi.ai/embed?publicKey={VAPI_PUBLIC_KEY}&assistantId={VAPI_AGENT_ID}&mode=voice"
 
 with st.sidebar:
     st.markdown("---")
     st.markdown("### 🎙️ Call Your AI Proxy")
-    st.write("Click the button below to connect to your live voice agent.")
-    st.components.v1.html(vapi_widget_code, height=100, scrolling=False)
+    st.write("Mobile browsers often block microphones inside embedded layouts. Click the hotline button below to open an unblocked, dedicated voice portal.")
+    
+    # Clean mobile action component button
+    st.link_button(
+        "📞 Start Live Voice Call", 
+        direct_call_url, 
+        use_container_width=True,
+        type="primary"
+    )
